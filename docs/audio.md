@@ -8,26 +8,35 @@ The app plays a phrase from the first source that exists:
 
 So the game is fully playable silent, and gets better as audio is added.
 
-## Generate clips (about five minutes, free)
+## The bundled clips
 
-There are roughly 780 phrases and 7,700 characters in total. Google Cloud Text-to-Speech has a Kannada
-(kn-IN) voice and its free tier covers this many times over.
+The clips in `app/audio/kn/` were generated once with **AI4Bharat Indic-TTS** (Kannada FastPitch + HiFi-GAN,
+female voice), an open model from IIT Madras that runs on an ordinary CPU. No account, no key, no cost.
+They are committed to the repo, so players never call any speech service.
 
-1. In Google Cloud Console create a project, enable **Cloud Text-to-Speech API**, and create an **API key**
-   (APIs & Services → Credentials). Restrict the key to that API.
-2. Run:
+It is a synthetic voice: clear, but flatter than a person, and it reads English loanwords with a Kannada
+accent. Single letters and very short words are its weakest spot.
 
-   ```bash
-   GOOGLE_TTS_KEY=your-key npm run audio
-   npm run sw          # refresh the offline file list
-   ```
+## Regenerate after changing lessons
 
-3. Commit `app/audio/`. Clips total a few megabytes.
+Clips are named by a hash of the phrase, so only new or edited phrases need making.
+Setup and commands are at the top of [`scripts/gen-audio-ai4bharat.py`](../scripts/gen-audio-ai4bharat.py):
 
-Options: `--voice kn-IN-Wavenet-B` (A/C are female, B/D male; `kn-IN-Standard-*` also exist), `--rate 0.9`,
-`--force` to redo everything, `--list` to count without generating.
+```bash
+node scripts/gen-audio.mjs --export phrases.json
+python scripts/gen-audio-ai4bharat.py --model kn --phrases phrases.json
+node scripts/gen-audio.mjs --list --label ai4bharat-indic-tts-kn-female
+npm run sw
+```
 
-Never commit the key. It is only read from the environment.
+Check the model's licence at https://github.com/AI4Bharat/Indic-TTS before redistributing clips in a
+commercial product.
+
+### Alternative: Google Cloud TTS
+
+`GOOGLE_TTS_KEY=your-key npm run audio` uses Google's kn-IN voices instead (free tier is ample, but Google
+requires a billing account). Options: `--voice kn-IN-Wavenet-B`, `--rate 0.9`, `--force`.
+Never commit the key.
 
 ## Human recordings
 

@@ -5,7 +5,8 @@
 //   npm run audio -- --list                          # just count what is needed
 //   npm run audio -- --voice kn-IN-Wavenet-B --rate 0.9 --force
 //
-// Uses Google Cloud Text-to-Speech (kn-IN). The whole syllabus is roughly 15,000
+// The free, no-account route is scripts/gen-audio-ai4bharat.py (see docs/audio.md);
+// this file also offers Google Cloud Text-to-Speech (kn-IN) as an alternative. The whole syllabus is roughly 15,000
 // characters, far inside the monthly free tier. See docs/audio.md.
 // Clips are named by a hash of the phrase (app/js/util.js `hash`), so re-running
 // only makes what changed. A clip you record yourself with the same file name wins:
@@ -40,7 +41,7 @@ for (const p of phrases) { const h = hash(p); if (byHash.has(h) && byHash.get(h)
 
 function writeManifest() {
   const have = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.mp3')).map((f) => f.slice(0, -4)).filter((h) => byHash.has(h)).sort() : [];
-  writeFileSync(manifestPath, JSON.stringify({ voice: have.length ? VOICE : null, clips: have }) + '\n');
+  writeFileSync(manifestPath, JSON.stringify({ voice: have.length ? opt('label', VOICE) : null, clips: have }) + '\n');
   return have.length;
 }
 async function synth(text, key) {
@@ -54,6 +55,11 @@ async function synth(text, key) {
 
 if (process.argv[1] && process.argv[1].endsWith('gen-audio.mjs')) {
   const chars = phrases.reduce((n, p) => n + p.length, 0);
+  if (args.includes('--export')) { // phrase list for an offline generator such as scripts/gen-audio-ai4bharat.py
+    const out = opt('export', 'phrases.json');
+    writeFileSync(out, JSON.stringify([...byHash].map(([h, text]) => ({ hash: h, text })), null, 0));
+    console.log('wrote ' + out + ' (' + byHash.size + ' phrases)'); process.exit(0);
+  }
   if (args.includes('--list')) { console.log(phrases.length + ' phrases, ' + chars + ' characters, ' + writeManifest() + ' clips present'); process.exit(0); }
   const key = process.env.GOOGLE_TTS_KEY;
   if (!key) { console.error('Set GOOGLE_TTS_KEY (see docs/audio.md). Nothing generated.'); process.exit(1); }

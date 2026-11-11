@@ -53,7 +53,7 @@ docs/                curriculum, content guide, audio
 ```bash
 npm run check        # content validation + unit tests + offline file list is current
 npm run sw           # regenerate app/sw.js after changing anything under app/
-npm run audio        # generate audio clips (needs GOOGLE_TTS_KEY, see docs/audio.md)
+python scripts/gen-audio-ai4bharat.py   # regenerate audio clips (see docs/audio.md)
 npm install && npm run artifact   # optional single-file build in dist/
 ```
 
@@ -62,8 +62,10 @@ The validator refuses any Roman spelling that does not match its Kannada script,
 
 ## Audio
 
-Out of the box the app speaks through the device's Kannada voice where one exists (most Android phones).
-For audio on every device and offline, generate clips once with `npm run audio`; details in [docs/audio.md](docs/audio.md).
+Every phrase has a bundled clip (`app/audio/kn/`), generated once with the open AI4Bharat Indic-TTS Kannada
+voice and committed here, so audio works offline on any device with no speech service involved.
+If a clip is missing the app falls back to the device's own Kannada voice. To regenerate after editing
+lessons, or to swap in human recordings, see [docs/audio.md](docs/audio.md).
 
 ## Licence
 
