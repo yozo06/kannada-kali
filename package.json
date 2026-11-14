@@ -1,6 +1,6 @@
 {
   "name": "kannada-kali",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A game for learning spoken Kannada, built for Hindi and Marathi speakers. Offline-first, no accounts, no AI at runtime.",
   "type": "module",
   "private": true,
@@ -12,7 +12,8 @@
     "sw": "node scripts/build-sw.mjs",
     "audio": "node scripts/gen-audio.mjs",
     "artifact": "node scripts/build-artifact.mjs",
-    "check": "npm run validate && npm test && node scripts/build-sw.mjs --check"
+    "check": "npm run validate && npm test && node scripts/check-i18n.mjs && node scripts/build-sw.mjs --check",
+    "i18n": "node scripts/check-i18n.mjs"
   },
   "devDependencies": {
     "esbuild": "^0.21.5"

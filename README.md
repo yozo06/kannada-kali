@@ -6,6 +6,7 @@ each ride is a five-minute quiz, and every mistake adds ₹10 to the fare meter.
 
 - **Offline-first.** A static web app (PWA). Install it to a phone's home screen and it runs with no network.
 - **No accounts, no server, no AI at runtime.** All lessons are data files in this repo; all game logic is plain, tested JavaScript. Progress stays on the device, with a copy-paste save code to back it up or move it.
+- **Taught in English, Hindi or Odia.** Pick a language and every meaning, note and button switches; pronunciation is then written in Devanagari or Odia letters instead of Roman, so no English is needed. See [docs/translating.md](docs/translating.md).
 - **Uses what you know.** Sanskrit cognates are taught as "free words", grammar is explained against Hindi/Marathi, and the script is taught through its Devanagari twins.
 
 ## Play
@@ -39,13 +40,14 @@ Full syllabus and what is still missing: [docs/curriculum.md](docs/curriculum.md
 app/                 the whole deployable site (no build step)
   index.html  sw.js  manifest.webmanifest
   content/           lessons as plain data: core, grammar, life, script, lab, forge, guide
+  content/i18n/      Hindi and Odia versions of every meaning, note and label
   js/engine/         pure logic: srs, progress, questions, session, translit  (unit-tested)
   js/ui/             rendering and event handling
   js/store.js        profiles and save codes     js/audio.js   clips → device voice fallback
   audio/             manifest.json + kn/<hash>.mp3 clips (generated, optional)
 scripts/             validate-content, build-sw, gen-audio, build-artifact, serve
 tests/               node --test
-docs/                curriculum, content guide, audio
+docs/                curriculum, content guide, audio, translating
 ```
 
 ## Develop

@@ -9,6 +9,9 @@ const ls = {
   set(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* blocked */ } },
   del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) { /* blocked */ } }
 };
+/** Small device-wide preferences, such as the language of the welcome screen. */
+export const getPref = (k) => ls.get('kk.pref.' + k);
+export const setPref = (k, v) => ls.set('kk.pref.' + k, v);
 const parse = (s) => { try { return JSON.parse(s); } catch (e) { return null; } };
 const newId = () => 'p' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
 

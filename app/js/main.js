@@ -6,6 +6,7 @@ import './ui/ride.js';
 import * as Store from './store.js';
 import { initAudio } from './audio.js';
 import { EMBEDDED } from './config.js';
+import { setLang } from './i18n.js';
 
 A.tab = (d) => tab(d.t);
 A.home = () => { G.R = null; G.D = null; tab('map'); };
@@ -34,6 +35,7 @@ document.addEventListener('keydown', (e) => {
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); G.install = e; if (G.S && !G.UI.screen && G.UI.tab === 'me') render(); });
 window.addEventListener('pagehide', () => { if (G.S) save(); });
 
+setLang(Store.getPref('lang') || 'en');
 const ix = Store.profiles();
 if (ix.cur) enter(ix.cur);
 render();

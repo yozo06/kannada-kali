@@ -3,6 +3,8 @@
 // any element with data-a="<name>".
 import { CARDS, STATIONS, DIALOGS } from '../../content/index.js';
 import { esc } from '../util.js';
+import { tx, pron, nativePron, lang } from '../i18n.js';
+import { toScript } from '../engine/translit.js';
 import { canSpeak, speak, sfx as playSfx } from '../audio.js';
 import { saveState, pushCloud } from '../store.js';
 import { prep, QTYPES } from '../engine/questions.js';
@@ -18,7 +20,9 @@ export const G = {
   install: null,      // deferred beforeinstallprompt event
   hooks: { entered() {} }
 };
-export const ctx = { CARDS, STATIONS, DIALOGS, get S() { return G.S; }, audio: canSpeak };
+export const ctx = { CARDS, STATIONS, DIALOGS, get S() { return G.S; }, audio: canSpeak, get native() { return nativePron(); } };
+/** The matching letter in the learner's own script: Devanagari, or Odia for Odia readers. */
+export const twinD = (k, d) => (lang() === 'or' ? toScript(k, 'odia') : d);
 export const STN = Object.fromEntries(STATIONS.map((s) => [s.id, s]));
 export const views = {}, screens = {}, A = {};
 export const $ = (s, r) => (r || document).querySelector(s);
@@ -47,13 +51,13 @@ export const dots = (b) => '<span class="mdots" role="img" aria-label="Memory st
 /** Kannada the way the player chose to see it. */
 export function kn(c) {
   const m = G.S.set.script;
-  if (m === 'roman') return '<span class="ro">' + esc(c.r) + '</span>';
+  if (m === 'roman') return '<span class="ro">' + esc(pron(c.k, c.r)) + '</span>';
   if (m === 'script') return '<span class="kn" lang="kn">' + esc(c.k) + '</span>';
   return knFull(c);
 }
-export const knFull = (c) => '<span class="kn" lang="kn">' + esc(c.k) + '</span><span class="ro">' + esc(c.r) + '</span>';
-export const spk = (txt, cls) => canSpeak(txt) ? '<button class="spk ' + (cls || '') + '" data-a="say" data-t="' + esc(txt) + '" aria-label="Hear it">' + IC.spk + '</button>' : '';
-export const topbar = (title, act) => '<header class="top"><div class="wrap topin"><button class="icb" data-a="' + (act || 'back') + '" aria-label="Back">' + IC.back + '</button><div class="ttl">' + esc(title) + '</div><span class="icb ph"></span></div></header>';
+export const knFull = (c) => '<span class="kn" lang="kn">' + esc(c.k) + '</span><span class="ro">' + esc(pron(c.k, c.r)) + '</span>';
+export const spk = (txt, cls) => canSpeak(txt) ? '<button class="spk ' + (cls || '') + '" data-a="say" data-t="' + esc(txt) + '" aria-label="' + tx('Hear it') + '">' + IC.spk + '</button>' : '';
+export const topbar = (title, act) => '<header class="top"><div class="wrap topin"><button class="icb" data-a="' + (act || 'back') + '" aria-label="' + tx('Back') + '">' + IC.back + '</button><div class="ttl">' + esc(title) + '</div><span class="icb ph"></span></div></header>';
 export const FARE = (n) => '₹' + String(n).padStart(3, '0');
 export const boxOf = (id) => (G.S.cards[id] ? G.S.cards[id][0] : 0);
 export const starsOf = (id) => (G.S.st[id] ? G.S.st[id][0] : 0);
@@ -72,7 +76,7 @@ export function toast(text) {
 export function celebrate(ev, now) {
   if (!ev) return;
   G.UI.fresh.badges.push(...ev.badges); G.UI.fresh.quests.push(...ev.quests);
-  if (now) { const q = G.UI.fresh.quests.splice(0); if (q.length) toast('Quest done: ' + q.join(' · ') + ' (+15 XP each)'); }
+  if (now) { const q = G.UI.fresh.quests.splice(0); if (q.length) toast(tx('Quest done: {q} (+15 XP each)', { q: q.join(' · ') })); }
 }
 
 /* ----- navigation ----- */
@@ -82,13 +86,13 @@ export function back() { G.R = null; G.D = null; G.UI.screen = null; G.UI.scroll
 
 function header() {
   return '<header class="top"><div class="wrap topin"><div class="brand"><span class="bk" lang="kn">ಕನ್ನಡ ಕಲಿ</span><span class="bl">Kannada Kali</span></div>' +
-    '<div class="chips"><span class="chip" title="Day streak">' + IC.flame + '<b>' + streakNow() + '</b></span><span class="chip" title="Total XP">' + IC.bolt + '<b>' + G.S.xp + '</b></span></div></div></header>';
+    '<div class="chips"><span class="chip" title="' + tx('Day streak') + '">' + IC.flame + '<b>' + streakNow() + '</b></span><span class="chip" title="' + tx('Total XP') + '">' + IC.bolt + '<b>' + G.S.xp + '</b></span></div></div></header>';
 }
 let streakNow = () => 0;
 export function setStreakFn(f) { streakNow = f; }
 function tabs() {
-  const T = [['map', 'Map', IC.tMap], ['drill', 'Drill', IC.tDrill], ['forge', 'Forge', IC.tForge], ['lab', 'Lab', '<span class="tk" lang="kn" aria-hidden="true">ಕ</span>'], ['me', 'You', IC.tMe]];
-  return '<nav class="tabs" aria-label="Sections"><div class="wrap tabsin">' + T.map((t) => '<button class="tabb' + (G.UI.tab === t[0] ? ' on' : '') + '" data-a="tab" data-t="' + t[0] + '"' + (G.UI.tab === t[0] ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span></button>').join('') + '</div></nav>';
+  const T = [['map', tx('Map'), IC.tMap], ['drill', tx('Drill'), IC.tDrill], ['forge', tx('Forge'), IC.tForge], ['lab', tx('Lab'), '<span class="tk" lang="kn" aria-hidden="true">ಕ</span>'], ['me', tx('You'), IC.tMe]];
+  return '<nav class="tabs" aria-label="' + tx('Sections') + '"><div class="wrap tabsin">' + T.map((t) => '<button class="tabb' + (G.UI.tab === t[0] ? ' on' : '') + '" data-a="tab" data-t="' + t[0] + '"' + (G.UI.tab === t[0] ? ' aria-current="page"' : '') + '>' + t[2] + '<span>' + t[1] + '</span></button>').join('') + '</div></nav>';
 }
 export function render() {
   const app = $('#app'); if (!app) return;
@@ -99,7 +103,7 @@ export function render() {
     else if (!sc || (sc.t === 'ride' && !G.R) || (sc.t === 'dialog' && !G.D)) { G.UI.screen = null; html = header() + '<main class="wrap main">' + views[G.UI.tab]() + '</main>' + tabs(); }
     else html = screens[sc.t](sc);
   } catch (e) {
-    html = '<main class="wrap main"><p>Something went wrong drawing this screen.</p><button class="btn" data-a="home">Back to the map</button></main>';
+    html = '<main class="wrap main"><p>' + tx('Something went wrong drawing this screen.') + '</p><button class="btn" data-a="home">' + tx('Back to the map') + '</button></main>';
     if (typeof console !== 'undefined') console.error(e);
   }
   app.innerHTML = html;
