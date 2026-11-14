@@ -15,7 +15,7 @@ export const BADGES = {
   hundred: ['Hundred cards', 'Meet 100 cards'], c300: ['Three hundred', 'Meet 300 cards']
 };
 export const QUEST_REWARD = 15;
-const QUESTS = [
+export const QUESTS = [
   { id: 'xp', key: 'xp', goal: 60, label: 'Earn 60 XP' },
   { id: 'rides', key: 'rides', goal: 2, label: 'Finish 2 rides' },
   { id: 'clean', key: 'clean', goal: 1, label: 'Finish a ride with one detour at most' },

@@ -179,3 +179,30 @@ test('clip names are stable', () => {
   assert.match(hash('ಇಲ್ಲ'), /^[0-9a-f]{8}$/);
   assert.notEqual(hash('ಇಲ್ಲ'), hash('ಇಲ್ಲಿ'));
 });
+
+test('pronunciation can be shown in Devanagari or Odia', async () => {
+  const { toScript } = await import('../app/js/engine/translit.js');
+  assert.equal(toScript('ಕನ್ನಡ', 'deva'), 'कन्नड');
+  assert.equal(toScript('ಒಂದು ಕೊಡಿ', 'deva'), 'ऒंदु कॊडि', 'short o keeps its own sign in Devanagari');
+  assert.equal(toScript('ಹೇಳಿ ನಾಳೆ', 'deva'), 'हेळि नाळॆ');
+  assert.equal(toScript('ಕನ್ನಡ', 'odia'), 'କନ୍ନଡ');
+  assert.equal(toScript('ಎ ಏ ಒ ಓ', 'odia'), 'ଏ ଏ ଓ ଓ', 'Odia has one e and one o');
+  assert.equal(toScript('ಸ್ವಲ್ಪ, OTP 5', 'odia'), 'ସ୍ୱଲ୍ପ, OTP 5', 'non-Kannada text passes through');
+});
+
+test('switching language rewrites lesson text and switches back cleanly', async () => {
+  const I = await import('../app/js/i18n.js');
+  const before = C.CARDS.nm1.e, stop = C.STATIONS[0].en;
+  I.setLang('hi');
+  assert.equal(I.pron('ಕನ್ನಡ', 'kannaDa'), 'कन्नड');
+  assert.equal(C.CARDS.lc1.e, 'क', 'letter cards show their sound in the learner script');
+  assert.equal(I.tx('{n} cards', { n: 3 }).includes('3'), true);
+  I.setLang('en');
+  assert.equal(C.CARDS.nm1.e, before); assert.equal(C.STATIONS[0].en, stop); assert.equal(I.pron('ಕನ್ನಡ', 'kannaDa'), 'kannaDa');
+  assert.equal(I.tx('Start here'), 'Start here');
+});
+
+test('translation files have no broken entries', async () => {
+  const { check } = await import('../scripts/check-i18n.mjs');
+  assert.deepEqual(check().errors, []);
+});

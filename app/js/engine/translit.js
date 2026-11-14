@@ -32,3 +32,21 @@ export function translit(text) {
   return out;
 }
 export const hasKannada = (s) => /[ಀ-೿]/.test(String(s));
+
+/* ----- Kannada -> another Indian script, for learners who do not read Roman ----- */
+// The Kannada, Devanagari and Odia Unicode blocks share one layout, so most letters
+// map by a fixed offset. Devanagari has the short ऎ ऒ; Odia does not, so they merge.
+const BASE = { deva: 0x0900, odia: 0x0B00 };
+const ODIA_FIX = { 0x0E: 0x0F, 0x12: 0x13, 0x46: 0x47, 0x4A: 0x4B, 0x35: 0x71, 0x31: 0x30, 0x34: 0x33 };
+export function toScript(text, script) {
+  const base = BASE[script]; if (!base) return String(text);
+  let out = '';
+  for (const ch of String(text).replace(/[‌‍]/g, '')) {
+    const cp = ch.codePointAt(0);
+    if (cp < 0x0C80 || cp > 0x0CFF) { out += ch; continue; }
+    let off = cp - 0x0C80;
+    if (script === 'odia' && ODIA_FIX[off] != null) off = ODIA_FIX[off];
+    out += String.fromCodePoint(base + off);
+  }
+  return out;
+}

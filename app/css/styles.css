@@ -5,7 +5,7 @@
   --focus:#6B3FA6;--star-off:#D6CEBB;--autoink:#1D1B33;--chip:#EFE8D8;
   --kfont:'Anek Kannada','Anek Latin','Noto Sans Kannada','Nirmala UI','Tunga',sans-serif;
   --dfont:'Anek Devanagari','Noto Sans Devanagari','Nirmala UI',sans-serif;
-  --lfont:'Anek Latin',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --lfont:'Anek Latin','Anek Devanagari','Anek Odia',system-ui,-apple-system,'Segoe UI',Roboto,'Noto Sans Devanagari','Noto Sans Oriya',sans-serif;
   --mono:'Share Tech Mono',ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
@@ -417,3 +417,11 @@ h1.eyebrow,h2.eyebrow{margin:0}
 .cr b{display:block}
 .cr .seg{flex:none}
 .main.q .eyebrow{font-size:.78rem}
+
+/* ---- languages ---- */
+.langpick{display:flex;gap:8px;flex-wrap:wrap}
+.langpick .seg{min-height:46px;font-size:1.05rem;padding:0 18px}
+:root:lang(hi) body,:root:lang(or) body{line-height:1.6}
+:root:lang(hi) .ro,:root:lang(or) .ro{font-size:.95em;line-height:1.5}
+:root:lang(hi) .eyebrow,:root:lang(or) .eyebrow{letter-spacing:.02em;font-size:.8rem}
+:root:lang(hi) .osound,:root:lang(or) .osound{font-size:1.9rem}

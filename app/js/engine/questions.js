@@ -37,7 +37,7 @@ export function makeQ(card, scope, ctx, opts = {}) {
   const aud = ctx.audio && ctx.audio(card.k);
   if (card.t === 'L') {
     t.push('l2s', 's2l'); t.push(seen ? 's2l' : 'l2s');
-    if (card.hi) t.push('dv2l');
+    if (card.hi && !ctx.native) t.push('dv2l'); // pointless when the sound is already shown in the learner's script
     if (seen && aud) t.push('a2l');
   } else if (card.t === 'W') {
     t.push('w2e', 'w2e'); if (seen && aud) t.push('listen');
@@ -47,7 +47,7 @@ export function makeQ(card, scope, ctx, opts = {}) {
       t.push('e2k', 'k2e'); if (card.hi) t.push('hi2k');
       if (isSentence(card)) t.push('build', 'build');
       if (aud) t.push('listen');
-      if (box >= 2 && ctx.S.set.typing && card.r.length <= 24 && /[a-z]/i.test(card.r)) t.push('type', 'type');
+      if (box >= 2 && ctx.S.set.typing && !ctx.native && card.r.length <= 24 && /[a-z]/i.test(card.r)) t.push('type', 'type');
     }
     if (opts.radar && card.hi) t.push('hi2k', 'hi2k', 'k2e');
   }

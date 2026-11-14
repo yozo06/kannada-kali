@@ -11,7 +11,7 @@ const out = await build({ entryPoints: [p('../app/js/main.js')], bundle: true, f
 const js = out.outputFiles[0].text;
 if (/<\/script/i.test(js)) throw new Error('bundle contains </script');
 const css = readFileSync(p('../app/css/styles.css'), 'utf8');
-const fonts = ['Anek+Latin:wght@400..800', 'Anek+Kannada:wght@400..800', 'Anek+Devanagari:wght@400..800', 'Share+Tech+Mono']
+const fonts = ['Anek+Latin:wght@400..800', 'Anek+Kannada:wght@400..800', 'Anek+Devanagari:wght@400..800', 'Anek+Odia:wght@400..800', 'Share+Tech+Mono']
   .map((f) => `<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=${f}&display=swap">`).join('\n');
 const html = `<title>Kannada Kali</title>
 <meta name="claude:viewport-fit-sides" content="cover">
