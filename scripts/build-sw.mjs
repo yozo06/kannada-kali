@@ -10,7 +10,7 @@ import { fileURLToPath } from 'node:url';
 const root = fileURLToPath(new URL('../app/', import.meta.url));
 const walk = (dir) => readdirSync(dir).flatMap((n) => { const p = join(dir, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
 const files = walk(root).map((p) => relative(root, p).split('\\').join('/'))
-  .filter((f) => f !== 'sw.js' && !f.startsWith('audio/kn/') && !f.endsWith('.md') && !f.endsWith('.DS_Store')).sort();
+  .filter((f) => f !== 'sw.js' && !(f.startsWith('audio/') && f.endsWith('.mp3')) && !f.endsWith('.md') && !f.endsWith('.DS_Store')).sort();
 const h = createHash('sha256'); for (const f of files) { h.update(f); h.update(readFileSync(join(root, f))); }
 const version = h.digest('hex').slice(0, 12);
 
@@ -29,7 +29,7 @@ self.addEventListener('fetch', (e) => {
   const req = e.request; if (req.method !== 'GET') return;
   const url = new URL(req.url); if (url.origin !== location.origin) return;
   // Audio clips: keep each one the first time it is heard.
-  if (url.pathname.includes('/audio/kn/')) {
+  if (url.pathname.includes('/audio/') && url.pathname.endsWith('.mp3')) {
     e.respondWith(caches.open(AUDIO).then((c) => c.match(req).then((hit) => hit || fetch(req).then((res) => { if (res.ok) c.put(req, res.clone()); return res; }))));
     return;
   }

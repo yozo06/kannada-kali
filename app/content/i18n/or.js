@@ -1,6 +1,7 @@
 // Odia teaching text. Keys are explained in docs/translating.md.
 // Check with: npm run i18n
 export default {
+  "ui:Voice": "ସ୍ୱର",
   "c.nm1.e": "ନମସ୍କାର",
   "c.nm1.n": "ହିନ୍ଦୀ/ମରାଠୀର 'नमस्कार' ଓ ଓଡ଼ିଆ 'ନମସ୍କାର' ସହ ଏକା ମୂଳ ଶବ୍ଦ। ଯେକୌଣସି ସମୟରେ କହିହେବ।",
   "c.nm2.e": "ଆପଣ କେମିତି ଅଛନ୍ତି? (ସମ୍ମାନ ଦେଇ)",

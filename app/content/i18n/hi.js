@@ -1,6 +1,7 @@
 // Hindi teaching text. Keys are explained in docs/translating.md.
 // Check with: npm run i18n
 export default {
+  "ui:Voice": "आवाज़",
   "c.nm1.e": "नमस्ते",
   "c.nm1.n": "हिन्दी/मराठी के 'नमस्कार' वाला ही संस्कृत मूल। किसी भी समय चलता है।",
   "c.nm2.e": "आप कैसे हैं? (आदर से)",

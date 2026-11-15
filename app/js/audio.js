@@ -1,11 +1,27 @@
-// Sound. A phrase plays from a bundled clip when one exists (audio/kn/<hash>.mp3),
-// otherwise from the device's Kannada voice, otherwise not at all.
+// Sound. A phrase plays from a bundled clip when one exists, otherwise from the
+// device's Kannada voice, otherwise not at all.
+// Clips come in voice packs: app/audio/<pack>/<hash>.mp3, listed in audio/manifest.json.
+// The player picks a pack under You → Settings; a phrase missing from the chosen pack
+// falls back to another pack, then to the device voice.
 import { hash } from './util.js';
 import { EMBEDDED } from './config.js';
 
-const CLIP_DIR = 'audio/kn/';
-let clips = new Set(), voice = null, player = null, ac = null, onChange = () => {};
+let packs = [];            // [{ id, label, clips: Set }]
+let chosen = '';           // pack id the player asked for ('' = the default pack)
+let fallback = '';         // manifest's default pack id
+let voice = null, player = null, ac = null, onChange = () => {};
 
+/** Accepts the current manifest ({ default, packs: { id: { label, clips } } }) and the first format ({ clips }). */
+export function readManifest(j) {
+  if (!j) return { packs: [], fallback: '' };
+  if (Array.isArray(j.clips)) return { packs: j.clips.length ? [{ id: 'kn', label: 'AI4Bharat', clips: new Set(j.clips) }] : [], fallback: 'kn' };
+  const list = Object.entries(j.packs || {}).filter(([, p]) => p && Array.isArray(p.clips) && p.clips.length).map(([id, p]) => ({ id, label: p.label || id, clips: new Set(p.clips) }));
+  return { packs: list, fallback: list.some((p) => p.id === j.default) ? j.default : (list[0] ? list[0].id : '') };
+}
+/** Which pack holds this clip, trying the preferred pack first. Pure. */
+export function pickPack(list, preferred, h) {
+  return list.find((p) => p.id === preferred && p.clips.has(h)) || list.find((p) => p.clips.has(h)) || null;
+}
 function findVoice() {
   try {
     const vs = window.speechSynthesis.getVoices();
@@ -19,17 +35,20 @@ export async function initAudio(changed) {
   if (EMBEDDED) return;
   try {
     const res = await fetch('audio/manifest.json'); if (!res.ok) return;
-    const j = await res.json();
-    if (j && Array.isArray(j.clips) && j.clips.length) { clips = new Set(j.clips); onChange(); }
+    const m = readManifest(await res.json());
+    if (m.packs.length) { packs = m.packs; fallback = m.fallback; onChange(); }
   } catch (e) { /* no clips bundled */ }
 }
-export const canSpeak = (text) => clips.has(hash(text)) || !!voice;
-export const audioInfo = () => ({ clips: clips.size, voice: !!voice });
+const current = () => (packs.some((p) => p.id === chosen) ? chosen : fallback);
+export function setVoicePack(id) { chosen = id || ''; }
+export const voicePacks = () => packs.map((p) => ({ id: p.id, label: p.label, clips: p.clips.size, on: p.id === current() }));
+export const canSpeak = (text) => !!pickPack(packs, current(), hash(text)) || !!voice;
+export const audioInfo = () => { const p = packs.find((x) => x.id === current()); return { clips: p ? p.clips.size : 0, voice: !!voice }; };
 export function speak(text) {
-  const h = hash(text);
+  const h = hash(text), pack = pickPack(packs, current(), h);
   try { if (player) player.pause(); if ('speechSynthesis' in window) window.speechSynthesis.cancel(); } catch (e) { /* ignore */ }
-  if (clips.has(h)) {
-    player = new Audio(CLIP_DIR + h + '.mp3');
+  if (pack) {
+    player = new Audio('audio/' + pack.id + '/' + h + '.mp3');
     player.play().catch(() => speakWithVoice(text));
     return;
   }
@@ -42,11 +61,11 @@ function speakWithVoice(text) {
     u.voice = voice; u.lang = voice.lang; u.rate = 0.82; window.speechSynthesis.speak(u);
   } catch (e) { /* ignore */ }
 }
-/** Fetch every clip once so the service worker keeps them for offline use. */
+/** Fetch every clip of the chosen pack once so the service worker keeps them for offline use. */
 export async function downloadAll(onProgress) {
-  const all = Array.from(clips); let done = 0, failed = 0;
+  const p = packs.find((x) => x.id === current()); const all = p ? Array.from(p.clips) : []; let done = 0, failed = 0;
   for (let i = 0; i < all.length; i += 6) {
-    await Promise.all(all.slice(i, i + 6).map((h) => fetch(CLIP_DIR + h + '.mp3').then((r) => { if (!r.ok) failed++; return r.arrayBuffer(); }).catch(() => { failed++; }).then(() => { done++; })));
+    await Promise.all(all.slice(i, i + 6).map((h) => fetch('audio/' + p.id + '/' + h + '.mp3').then((r) => { if (!r.ok) failed++; return r.arrayBuffer(); }).catch(() => { failed++; }).then(() => { done++; })));
     if (onProgress) onProgress(done, all.length);
   }
   return { total: all.length, failed };

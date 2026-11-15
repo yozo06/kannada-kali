@@ -206,3 +206,15 @@ test('translation files have no broken entries', async () => {
   const { check } = await import('../scripts/check-i18n.mjs');
   assert.deepEqual(check().errors, []);
 });
+
+test('voice packs: preferred pack first, then any pack that has the clip', async () => {
+  const { readManifest, pickPack } = await import('../app/js/audio.js');
+  const m = readManifest({ default: 'sarvam', packs: { sarvam: { label: 'Sarvam', clips: ['aa'] }, kn: { label: 'AI4Bharat', clips: ['aa', 'bb'] }, empty: { clips: [] } } });
+  assert.deepEqual(m.packs.map((p) => p.id), ['sarvam', 'kn']); assert.equal(m.fallback, 'sarvam');
+  assert.equal(pickPack(m.packs, 'sarvam', 'aa').id, 'sarvam');
+  assert.equal(pickPack(m.packs, 'kn', 'aa').id, 'kn');
+  assert.equal(pickPack(m.packs, 'sarvam', 'bb').id, 'kn', 'falls back when the chosen pack lacks a clip');
+  assert.equal(pickPack(m.packs, 'sarvam', 'zz'), null);
+  assert.equal(readManifest({ voice: 'x', clips: ['aa'] }).packs[0].id, 'kn', 'reads the first manifest format');
+  assert.equal(readManifest({ clips: [] }).packs.length, 0);
+});

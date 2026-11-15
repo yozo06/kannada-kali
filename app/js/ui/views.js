@@ -4,7 +4,7 @@ import { esc, rnd, today, DAY } from '../util.js';
 import { dueIds } from '../engine/srs.js';
 import { BADGES, level, curStreak, questStatus, addXp, award, bump, merge } from '../engine/progress.js';
 import { weakRide } from '../engine/session.js';
-import { audioInfo, downloadAll, speak, canSpeak } from '../audio.js';
+import { audioInfo, downloadAll, speak, canSpeak, voicePacks, setVoicePack } from '../audio.js';
 import * as Store from '../store.js';
 import { VERSION, REPO_URL, EMBEDDED } from '../config.js';
 import { tx, pron, nativePron, lang, setLang, LANGS } from '../i18n.js';
@@ -223,12 +223,14 @@ views.me = () => {
     '<div class="setr"><span>' + tx('Daily goal') + '</span><div class="segs">' + [[30, tx('Easy 30')], [50, tx('Steady 50')], [100, tx('Serious 100')]].map((g) => seg((set.goal || 50) === g[0], 'goal', 'data-v="' + g[0] + '"', g[1])).join('') + '</div></div>' +
     (nativePron() ? '' : '<div class="setr"><span>' + tx('Typing questions') + '</span>' + seg(set.typing, 'typing', '', set.typing ? tx('On') : tx('Off')) + '</div>') +
     '<div class="setr"><span>' + tx('Sound effects') + '</span>' + seg(set.fx, 'fx', '', set.fx ? tx('On') : tx('Off')) + '</div>' +
+    (voicePacks().length > 1 ? '<div class="setr"><span>' + tx('Voice') + '</span><div class="segs">' + voicePacks().map((p) => seg(p.on, 'voice', 'data-v="' + p.id + '"', esc(p.label))).join('') + '</div></div>' : '') +
     '<p class="mut">' + audioLine + '</p>' + (au.clips && !EMBEDDED ? '<button class="btn" data-a="dlaudio">' + (G.UI.msg || tx('Keep all audio for offline use')) + '</button>' : '') +
     '<p class="mut">' + sync + '</p>' +
     (G.install ? '<button class="btn pri" data-a="install">' + tx('Install the app on this device') + '</button>' : '') +
     '<div class="setr"><span>' + tx('Erase this player’s progress') + '</span><button class="seg dang' + (G.UI.confirm === 'reset' ? ' on' : '') + '" data-a="reset">' + (G.UI.confirm === 'reset' ? tx('Tap again to erase') : tx('Erase')) + '</button></div></section>' +
     '<p class="mut center">Kannada Kali ' + VERSION + (EMBEDDED ? '' : ' · ' + tx('works offline once loaded')) + (REPO_URL ? ' · <a href="' + esc(REPO_URL) + '" target="_blank" rel="noopener">' + tx('source and fixes') + '</a>' : '') + '</p>';
 };
+A.voice = (d) => { G.S.set.voice = d.v; setVoicePack(d.v); G.UI.msg = ''; save(); render(); const c = CARDS.nm1; if (canSpeak(c.k)) speak(c.k); };
 A.script = (d) => { G.S.set.script = d.v; save(); render(); };
 A.goal = (d) => { G.S.set.goal = +d.v; save(); render(); };
 A.typing = () => { G.S.set.typing = G.S.set.typing ? 0 : 1; save(); render(); };
@@ -250,6 +252,7 @@ export function enter(id) {
   if (!p) { G.S = null; G.pid = null; G.profile = null; return; }
   Store.switchProfile(p.id); G.pid = p.id; G.profile = p; G.S = Store.loadState(p.id); G.R = null; G.D = null;
   setLang(G.S.set.lang || Store.getPref('lang') || 'en');
+  setVoicePack(G.S.set.voice || '');
   G.UI.open = {}; G.UI.fresh = { badges: [], quests: [] };
   G.hooks.entered();
 }
