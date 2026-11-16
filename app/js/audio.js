@@ -4,6 +4,7 @@
 // The player picks a pack under You → Settings; a phrase missing from the chosen pack
 // falls back to another pack, then to the device voice.
 import { hash } from './util.js';
+import * as Voices from '../vendor/sutra/audio/index.js';
 import { EMBEDDED } from './config.js';
 
 let packs = [];            // [{ id, label, clips: Set }]
@@ -12,16 +13,9 @@ let fallback = '';         // manifest's default pack id
 let voice = null, player = null, ac = null, onChange = () => {};
 
 /** Accepts the current manifest ({ default, packs: { id: { label, clips } } }) and the first format ({ clips }). */
-export function readManifest(j) {
-  if (!j) return { packs: [], fallback: '' };
-  if (Array.isArray(j.clips)) return { packs: j.clips.length ? [{ id: 'kn', label: 'AI4Bharat', clips: new Set(j.clips) }] : [], fallback: 'kn' };
-  const list = Object.entries(j.packs || {}).filter(([, p]) => p && Array.isArray(p.clips) && p.clips.length).map(([id, p]) => ({ id, label: p.label || id, clips: new Set(p.clips) }));
-  return { packs: list, fallback: list.some((p) => p.id === j.default) ? j.default : (list[0] ? list[0].id : '') };
-}
+export const readManifest = (j) => Voices.readManifest(j, { id: 'kn', label: 'AI4Bharat' });
 /** Which pack holds this clip, trying the preferred pack first. Pure. */
-export function pickPack(list, preferred, h) {
-  return list.find((p) => p.id === preferred && p.clips.has(h)) || list.find((p) => p.clips.has(h)) || null;
-}
+export const pickPack = (list, preferred, h) => Voices.pickPack(list, preferred, h) || null;
 function findVoice() {
   try {
     const vs = window.speechSynthesis.getVoices();

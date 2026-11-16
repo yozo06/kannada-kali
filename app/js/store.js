@@ -1,14 +1,11 @@
 // Where progress lives: local profiles in the browser, with a text code to move
 // a profile between devices. No server. Falls back to memory if storage is blocked.
 import { newState, normalize, merge } from './engine/progress.js';
+import { localStore } from '../vendor/sutra/browser/storage.js';
+import { encodeCode, decodeCode } from '../vendor/sutra/save/index.js';
 
 const PKEY = 'kk.profiles.v1', SKEY = 'kk.state.', LEGACY = 'kannadaKali.v1';
-const mem = {};
-const ls = {
-  get(k) { try { const v = localStorage.getItem(k); if (v != null) return v; } catch (e) { /* blocked */ } return k in mem ? mem[k] : null; },
-  set(k, v) { mem[k] = v; try { localStorage.setItem(k, v); } catch (e) { /* blocked */ } },
-  del(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) { /* blocked */ } }
-};
+const ls = localStore(); // falls back to memory when the browser blocks storage
 /** Small device-wide preferences, such as the language of the welcome screen. */
 export const getPref = (k) => ls.get('kk.pref.' + k);
 export const setPref = (k, v) => ls.set('kk.pref.' + k, v);
@@ -43,18 +40,12 @@ export const loadState = (id) => normalize(parse(ls.get(SKEY + id)));
 export function saveState(id, S) { if (id) ls.set(SKEY + id, JSON.stringify(S)); }
 
 /* ----- save codes ----- */
-const b64 = {
-  enc(str) { const b = new TextEncoder().encode(str); let s = ''; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); },
-  dec(code) { const s = atob(code.replace(/-/g, '+').replace(/_/g, '/')); const b = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) b[i] = s.charCodeAt(i); return new TextDecoder().decode(b); }
-};
-/** A profile as one line of text: "KK1." + base64url(JSON). */
-export function exportCode(S, name) { return 'KK1.' + b64.enc(JSON.stringify({ n: name || '', s: S })); }
+/** A profile as one line of text: "KK1." + base64url(JSON). The format is wildarc-sutra's save code. */
+export function exportCode(S, name) { return encodeCode('KK1', { n: name || '', s: S }); }
 export function importCode(code) {
-  try {
-    const m = /KK1\.([A-Za-z0-9_-]+)/.exec(String(code).replace(/\s+/g, '')); if (!m) return null;
-    const j = JSON.parse(b64.dec(m[1])); if (!j || !j.s || j.s.v !== 1) return null;
-    return { name: String(j.n || '').slice(0, 24), state: normalize(j.s) };
-  } catch (e) { return null; }
+  const read = decodeCode('KK1', String(code)); if (!read.ok) return null;
+  const j = read.value; if (!j || !j.s || j.s.v !== 1) return null;
+  return { name: String(j.n || '').slice(0, 24), state: normalize(j.s) };
 }
 
 /* ----- optional sync when the page runs as a claude.ai artifact ----- */

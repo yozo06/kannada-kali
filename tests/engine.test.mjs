@@ -218,3 +218,22 @@ test('voice packs: preferred pack first, then any pack that has the clip', async
   assert.equal(readManifest({ voice: 'x', clips: ['aa'] }).packs[0].id, 'kn', 'reads the first manifest format');
   assert.equal(readManifest({ clips: [] }).packs.length, 0);
 });
+
+test('unitOf names a ride for anonymous counts', async () => {
+  const { unitOf } = await import('../app/js/engine/session.js');
+  const ctx = mkCtx();
+  assert.equal(unitOf(stationRide(C.STATIONS[0], ctx)), 'stop-' + C.STATIONS[0].id);
+  assert.equal(unitOf(bossRide(ctx)), 'boss');
+  assert.equal(unitOf({ kind: 'drill' }), 'drill'); assert.equal(unitOf({ kind: 'drill', weak: 1 }), 'weak');
+  assert.equal(unitOf({ kind: 'twins' }), 'lab-twins'); assert.equal(unitOf({ kind: 'chat', chatId: 'auto' }), 'chat-auto');
+});
+
+test('the shared libraries give the same answers this app always gave', async () => {
+  const { exportCode, importCode } = await import('../app/js/store.js');
+  assert.equal(hash('ನಮಸ್ಕಾರ'), 'e0bbc62d', 'clip names must never change');
+  const code = exportCode({ v: 1, xp: 5 }, 'ಕ😀');
+  assert.equal(code, 'KK1.eyJuIjoi4LKV8J-YgCIsInMiOnsidiI6MSwieHAiOjV9fQ', 'save codes must stay readable by older copies');
+  const back = importCode('here it is: ' + code + '\n');
+  assert.equal(back.name, 'ಕ😀'); assert.equal(back.state.xp, 5);
+  assert.equal(importCode('nonsense'), null); assert.equal(importCode('KK1.abcd'), null);
+});

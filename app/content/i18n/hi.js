@@ -1685,5 +1685,9 @@ export default {
   "ui:Create player": "खिलाड़ी बनाइए",
   "ui:Start learning": "सीखना शुरू कीजिए",
   "ui:Cancel": "रद्द कीजिए",
-  "ui:I have a save code": "मेरे पास सेव कोड है"
+  "ui:I have a save code": "मेरे पास सेव कोड है",
+  "ui:This app counts anonymous usage, to see what helps learners. No names, no ids, nothing you type. You can turn it off under You → Settings.": "यह ऐप बिना नाम के गिनता है कि इसका कितना उपयोग होता है, ताकि पता चले कि सीखने वालों को क्या मदद करता है। कोई नाम नहीं, कोई आईडी नहीं, आपका लिखा कुछ भी नहीं। आप इसे आप → सेटिंग में बंद कर सकते हैं।",
+  "ui:OK": "ठीक है",
+  "ui:Anonymous usage counts": "बिना नाम की उपयोग गिनती",
+  "ui:Counts how often the app is opened and which stops get finished, to see what helps learners. No names, no ids, nothing you type.": "यह गिनता है कि ऐप कितनी बार खोला गया और कौन-से स्टॉप पूरे हुए, ताकि पता चले कि सीखने वालों को क्या मदद करता है। कोई नाम नहीं, कोई आईडी नहीं, आपका लिखा कुछ भी नहीं।"
 };

@@ -1,5 +1,7 @@
 // Build-time facts about this copy of the app.
-export const VERSION = '0.3.1';
+export const VERSION = '0.4.0';
 export const REPO_URL = 'https://github.com/yozo06/kannada-kali';
+/** Where anonymous usage counts go (a GoatCounter site). Empty turns counting off. Forks: use your own or leave it empty. */
+export const COUNT_ENDPOINT = 'https://yozo.goatcounter.com/count';
 /** True inside the single-file claude.ai build, where there is no service worker and no clip folder. */
 export const EMBEDDED = typeof window !== 'undefined' && !!window.KK_EMBEDDED;

@@ -7,7 +7,8 @@ The bottleneck is good Kannada, not code. In rough order of value:
 2. **Recorded audio** for phrases (see `docs/audio.md`).
 3. **New stops** from the gaps listed in `docs/curriculum.md`. Follow `docs/content-guide.md`.
 4. Code. Keep the rules: no runtime network dependency, no accounts, engine logic stays pure and tested
-   (`app/js/engine/`, `tests/`), no build step for the site.
+   (`app/js/engine/`, `tests/`), no build step for the site. Anything under `app/vendor/sutra/` is a copy of
+   [wildarc-sutra](https://github.com/yozo06/wildarc-sutra): fix it there, not here.
 
 Before a pull request: `npm run check` must pass, and run `npm run sw` if you changed anything under `app/`.
 

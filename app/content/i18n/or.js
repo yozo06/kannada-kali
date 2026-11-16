@@ -1685,5 +1685,9 @@ export default {
   "ui:Create player": "ଖେଳାଳି ତିଆରି କରନ୍ତୁ",
   "ui:Start learning": "ଶିଖା ଆରମ୍ଭ କରନ୍ତୁ",
   "ui:Cancel": "ବାତିଲ୍",
-  "ui:I have a save code": "ମୋ ପାଖରେ ସେଭ୍ କୋଡ୍ ଅଛି"
+  "ui:I have a save code": "ମୋ ପାଖରେ ସେଭ୍ କୋଡ୍ ଅଛି",
+  "ui:This app counts anonymous usage, to see what helps learners. No names, no ids, nothing you type. You can turn it off under You → Settings.": "ଏହି ଆପ୍ ନାମ ନ ନେଇ ଗଣେ ଯେ ଏହା କେତେ ବ୍ୟବହାର ହେଉଛି, ଯାହାଫଳରେ ଜଣାପଡ଼େ ଶିଖୁଥିବା ଲୋକଙ୍କୁ କ’ଣ ସାହାଯ୍ୟ କରେ। କୌଣସି ନାମ ନାହିଁ, କୌଣସି ଆଇଡି ନାହିଁ, ଆପଣ ଲେଖିଥିବା କିଛି ନାହିଁ। ଆପଣ ଏହାକୁ ଆପଣ → ସେଟିଂ ରେ ବନ୍ଦ କରିପାରିବେ।",
+  "ui:OK": "ଠିକ୍ ଅଛି",
+  "ui:Anonymous usage counts": "ନାମ ବିନା ବ୍ୟବହାର ଗଣନା",
+  "ui:Counts how often the app is opened and which stops get finished, to see what helps learners. No names, no ids, nothing you type.": "ଏହା ଗଣେ ଯେ ଆପ୍ କେତେ ଥର ଖୋଲାଯାଇଛି ଏବଂ କେଉଁ ଷ୍ଟପ୍ ସରିଛି, ଯାହାଫଳରେ ଜଣାପଡ଼େ ଶିଖୁଥିବା ଲୋକଙ୍କୁ କ’ଣ ସାହାଯ୍ୟ କରେ। କୌଣସି ନାମ ନାହିଁ, କୌଣସି ଆଇଡି ନାହିଁ, ଆପଣ ଲେଖିଥିବା କିଛି ନାହିଁ।"
 };
