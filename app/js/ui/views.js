@@ -5,6 +5,7 @@ import { dueIds } from '../engine/srs.js';
 import { BADGES, level, curStreak, questStatus, addXp, award, bump, merge } from '../engine/progress.js';
 import { weakRide } from '../engine/session.js';
 import { audioInfo, downloadAll, speak, canSpeak, voicePacks, setVoicePack } from '../audio.js';
+import { countingAvailable, countingOn, setCounting } from '../meter.js';
 import * as Store from '../store.js';
 import { VERSION, REPO_URL, EMBEDDED } from '../config.js';
 import { tx, pron, nativePron, lang, setLang, LANGS } from '../i18n.js';
@@ -76,7 +77,9 @@ views.map = () => {
   const mst = starsOf('majestic');
   const inter = '<section class="line l9 open"><div class="lh static"><span class="lb x">M</span><span class="lt2"><span class="h2">' + tx('Interchange') + '</span><span class="sub">' + tx('Every line meets here. One long mixed ride.') + '</span></span></div>' +
     '<button class="stn boss' + (nx.id === 'majestic' ? ' next' : '') + '" data-a="open" data-id="majestic"><span class="sk kn" lang="kn">' + esc(STN.majestic.name) + '</span><span class="sn">' + tx('Majestic') + '</span><span class="sf">' + stars(mst) + '</span></button></section>';
-  return ticket + quests + mission + pocket + LINES.map((l) => lineSection(l, l.side ? ns : nx)).join('') + inter;
+  // Shown once: the app counts anonymous usage, and how to switch that off.
+  const counts = countingAvailable() && countingOn() && !Store.getPref('countSeen') ? '<section class="panel flat" id="countNote"><p>' + tx('This app counts anonymous usage, to see what helps learners. No names, no ids, nothing you type. You can turn it off under You → Settings.') + '</p><button class="btn" data-a="countok">' + tx('OK') + '</button></section>' : '';
+  return counts + ticket + quests + mission + pocket + LINES.map((l) => lineSection(l, l.side ? ns : nx)).join('') + inter;
 };
 A.line = (d) => { const n = +d.n, sts = STATIONS.filter((s) => s.line === n); const cur = G.UI.open[n] != null ? G.UI.open[n] : sts.includes(nextMain()); G.UI.open[n] = !cur; render(); };
 A.mission = () => {
@@ -224,6 +227,7 @@ views.me = () => {
     (nativePron() ? '' : '<div class="setr"><span>' + tx('Typing questions') + '</span>' + seg(set.typing, 'typing', '', set.typing ? tx('On') : tx('Off')) + '</div>') +
     '<div class="setr"><span>' + tx('Sound effects') + '</span>' + seg(set.fx, 'fx', '', set.fx ? tx('On') : tx('Off')) + '</div>' +
     (voicePacks().length > 1 ? '<div class="setr"><span>' + tx('Voice') + '</span><div class="segs">' + voicePacks().map((p) => seg(p.on, 'voice', 'data-v="' + p.id + '"', esc(p.label))).join('') + '</div></div>' : '') +
+    (countingAvailable() ? '<div class="setr"><span>' + tx('Anonymous usage counts') + '</span>' + seg(countingOn(), 'counting', '', countingOn() ? tx('On') : tx('Off')) + '</div><p class="mut">' + tx('Counts how often the app is opened and which stops get finished, to see what helps learners. No names, no ids, nothing you type.') + '</p>' : '') +
     '<p class="mut">' + audioLine + '</p>' + (au.clips && !EMBEDDED ? '<button class="btn" data-a="dlaudio">' + (G.UI.msg || tx('Keep all audio for offline use')) + '</button>' : '') +
     '<p class="mut">' + sync + '</p>' +
     (G.install ? '<button class="btn pri" data-a="install">' + tx('Install the app on this device') + '</button>' : '') +
@@ -235,6 +239,8 @@ A.script = (d) => { G.S.set.script = d.v; save(); render(); };
 A.goal = (d) => { G.S.set.goal = +d.v; save(); render(); };
 A.typing = () => { G.S.set.typing = G.S.set.typing ? 0 : 1; save(); render(); };
 A.fx = () => { G.S.set.fx = G.S.set.fx ? 0 : 1; save(); sfx(true); render(); };
+A.counting = () => { setCounting(!countingOn()); Store.setPref('countSeen', '1'); render(); };
+A.countok = () => { Store.setPref('countSeen', '1'); render(); };
 A.reset = () => {
   if (G.UI.confirm !== 'reset') { G.UI.confirm = 'reset'; return render(); }
   const keep = G.S.set; G.S = Store.loadState('none'); G.S.set = keep; G.UI.confirm = ''; save(); render(); toast(tx('Progress erased.'));

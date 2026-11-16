@@ -1,6 +1,7 @@
 // Player progress: XP, levels, streaks, badges, daily quests, and merging two saves.
 // Everything here is plain data in, plain data out.
-import { today, dayOff, hash } from '../util.js';
+import { today, hash } from '../util.js';
+import { touch, current } from '../../vendor/sutra/habit/index.js';
 
 export const LEVELS = [[0, 'Visitor'], [150, 'Passenger'], [400, 'Commuter'], [900, 'Regular'], [1700, 'Local'], [2800, 'Bengalurian'], [6000, 'Kannadiga']];
 export const BADGES = {
@@ -58,20 +59,11 @@ export function award(S, id, now, ev) {
   mkEv(ev).badges.push(id);
 }
 /** Current streak, or 0 if it has lapsed. A stored freeze keeps a one-day gap alive. */
-export function curStreak(S, now = Date.now()) {
-  const s = S.streak;
-  if (s.last === today(now) || s.last === dayOff(-1, now)) return s.n;
-  if (s.last === dayOff(-2, now) && s.fz > 0) return s.n;
-  return 0;
-}
+export function curStreak(S, now = Date.now()) { return current(S.streak, today(now)); }
 function touchStreak(S, now, ev) {
-  const s = S.streak, d = today(now);
-  if (s.last === d) return;
-  if (s.last === dayOff(-1, now)) s.n++;
-  else if (s.last === dayOff(-2, now) && s.fz > 0) { s.fz--; s.n++; s.saved = d; }
-  else s.n = 1;
-  s.last = d; s.best = Math.max(s.best, s.n);
-  if (s.n % 7 === 0) s.fz = Math.min(2, (s.fz || 0) + 1);
+  const d = today(now);
+  if (S.streak.last === d) return;
+  const s = S.streak = touch(S.streak, d); // the rules (freezes, best) live in wildarc-sutra's habit
   if (s.n >= 3) award(S, 'streak3', now, ev);
   if (s.n >= 7) award(S, 'streak7', now, ev);
   if (s.n >= 30) award(S, 'streak30', now, ev);

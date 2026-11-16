@@ -48,6 +48,8 @@ export function bossRide(ctx) {
   R.q = ids.map((id) => makeQ(ctx.CARDS[id], pool, ctx)); R.total = R.q.length; return R;
 }
 export const current = (R) => R && R.q[R.i];
+/** A short stable name for a ride or chat, used for anonymous counts: stop-nm, drill, weak, boss, lab-twins, chat-auto. */
+export const unitOf = (R) => (R.kind === 'station' ? 'stop-' + R.st : R.kind === 'chat' ? 'chat-' + R.chatId : R.kind === 'drill' ? (R.weak ? 'weak' : 'drill') : R.kind === 'boss' ? 'boss' : 'lab-' + R.kind);
 
 /** Record the answer to the current question. Wrong card answers come back once, in another form. */
 export function answer(R, ctx, ok, now = Date.now(), ev) {

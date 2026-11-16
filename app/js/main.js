@@ -2,7 +2,8 @@
 import { CARDS } from '../content/index.js';
 import { G, A, render, tab, back, save, $ } from './ui/core.js';
 import { enter, bookList } from './ui/views.js';
-import './ui/ride.js';
+import { countQuit } from './ui/ride.js';
+import { count } from './meter.js';
 import * as Store from './store.js';
 import { initAudio } from './audio.js';
 import { EMBEDDED } from './config.js';
@@ -33,12 +34,15 @@ document.addEventListener('keydown', (e) => {
   const b = $('.opt[data-i="' + (+e.key - 1) + '"]:not([disabled])'); if (b) b.click();
 });
 window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); G.install = e; if (G.S && !G.UI.screen && G.UI.tab === 'me') render(); });
-window.addEventListener('pagehide', () => { if (G.S) save(); });
+window.addEventListener('pagehide', () => { if (G.S) save(); if (G.UI.screen && (G.UI.screen.t === 'ride' || G.UI.screen.t === 'dialog')) countQuit(); });
+window.addEventListener('online', () => count({ t: 'open' })); // send whatever waited while offline
+window.addEventListener('appinstalled', () => count({ t: 'count', name: 'installed', once: true }));
 
 setLang(Store.getPref('lang') || 'en');
 const ix = Store.profiles();
 if (ix.cur) enter(ix.cur);
 render();
+count({ t: 'open' });
 initAudio(() => render());
 if (!EMBEDDED && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ }); });

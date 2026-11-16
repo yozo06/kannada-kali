@@ -6,6 +6,7 @@ import { QTYPES, prep, checkTyped } from '../engine/questions.js';
 import * as Ses from '../engine/session.js';
 import { BADGES } from '../engine/progress.js';
 import { speak } from '../audio.js';
+import { count } from '../meter.js';
 import { tx, pron, nativePron, L } from '../i18n.js';
 import { G, ctx, STN, screens, A, IC, stars, kn, knFull, spk, FARE, save, sfx, celebrate, go, back, render, twinD, $ } from './core.js';
 
@@ -15,7 +16,7 @@ export const QUESTION_LABELS = () => [tx('What does this mean?'), tx('How do you
 
 const KINDLABEL = () => ({ station: tx('Ride'), drill: tx('Daily drill'), boss: tx('Majestic'), twins: tx('Script twins'), street: tx('Street reader'), trap: tx('Trap zone'), forge: tx('Sentence forge'), chat: tx('Boss chat') });
 const cur = () => Ses.current(G.R);
-function start(R) { if (!R) return; G.R = R; G.UI.typed = ''; go({ t: 'ride' }); }
+function start(R) { if (!R) return; G.R = R; G.UI.typed = ''; count({ t: 'start', unit: Ses.unitOf(R) }); go({ t: 'ride' }); }
 
 /* ----- starting rides ----- */
 A.ride = (d) => start(Ses.stationRide(STN[d.id], ctx));
@@ -98,9 +99,14 @@ A.next = () => {
   const q = cur(); if (!q || !q.done) return;
   G.UI.typed = '';
   if (Ses.advance(G.R, ctx)) return render();
-  celebrate(Ses.finishRide(G.R, ctx)); save(); go({ t: 'result' });
+  celebrate(Ses.finishRide(G.R, ctx)); save(); count({ t: 'done', unit: Ses.unitOf(G.R) }); go({ t: 'result' });
 };
-A.quit = () => back();
+/** Count where a ride or chat was left unfinished. Exported so closing the app mid-ride counts too. */
+export function countQuit() {
+  if (G.D && !G.D.fin) count({ t: 'quit', unit: 'chat-' + G.D.id, at: G.D.t });
+  else if (G.R && G.R.stars == null && G.R.q.length) count({ t: 'quit', unit: Ses.unitOf(G.R), at: G.R.i });
+}
+A.quit = () => { countQuit(); back(); };
 A.say = (d) => speak(d.t);
 
 /* ----- ride screen ----- */
@@ -158,10 +164,10 @@ screens.ride = () => {
 };
 
 /* ----- boss chats ----- */
-A.dialog = (d) => { G.D = Ses.newChat(d.id, ctx); go({ t: 'dialog' }); };
+A.dialog = (d) => { G.D = Ses.newChat(d.id, ctx); count({ t: 'start', unit: 'chat-' + d.id }); go({ t: 'dialog' }); };
 A.dpick = (d) => { const ok = Ses.chatPick(G.D, +d.i, ctx); sfx(ok); G.UI.scroll = false; render(); const end = $('#chatEnd'); if (end && end.scrollIntoView) end.scrollIntoView({ block: 'end' }); };
 A.dpeek = (d) => { G.D.peek[d.k] = 1; render(); };
-A.dend = () => { const { R, ev } = Ses.finishChat(G.D, ctx); G.R = R; G.D = null; celebrate(ev); save(); go({ t: 'result' }); };
+A.dend = () => { const { R, ev } = Ses.finishChat(G.D, ctx); G.R = R; G.D = null; celebrate(ev); save(); count({ t: 'done', unit: Ses.unitOf(R) }); go({ t: 'result' }); };
 screens.dialog = () => {
   const D = G.D, d = DIALOGS[D.id], turn = d.turns[D.t];
   const bubbles = D.log.map((b, i) => b.who === 'npc'

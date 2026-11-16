@@ -6,6 +6,7 @@ each ride is a five-minute quiz, and every mistake adds ₹10 to the fare meter.
 
 - **Offline-first.** A static web app (PWA). Install it to a phone's home screen and it runs with no network.
 - **No accounts, no server, no AI at runtime.** All lessons are data files in this repo; all game logic is plain, tested JavaScript. Progress stays on the device, with a copy-paste save code to back it up or move it.
+- **Anonymous counts only.** The hosted copy counts how often it is opened and which stops get finished: no names, no ids, nothing you type, and a switch to turn it off. See [docs/analytics.md](docs/analytics.md).
 - **Taught in English, Hindi or Odia.** Pick a language and every meaning, note and button switches; pronunciation is then written in Devanagari or Odia letters instead of Roman, so no English is needed. See [docs/translating.md](docs/translating.md).
 - **Uses what you know.** Sanskrit cognates are taught as "free words", grammar is explained against Hindi/Marathi, and the script is taught through its Devanagari twins.
 
@@ -44,10 +45,12 @@ app/                 the whole deployable site (no build step)
   js/engine/         pure logic: srs, progress, questions, session, translit  (unit-tested)
   js/ui/             rendering and event handling
   js/store.js        profiles and save codes     js/audio.js   clips → device voice fallback
+  js/meter.js        anonymous usage counts
+  vendor/sutra/      shared libraries copied from wildarc-sutra (do not edit here)
   audio/             manifest.json + kn/<hash>.mp3 clips (generated, optional)
-scripts/             validate-content, build-sw, gen-audio, build-artifact, serve
+scripts/             validate-content, build-sw, gen-audio, build-artifact, sync-sutra, serve
 tests/               node --test
-docs/                curriculum, content guide, audio, translating
+docs/                curriculum, content guide, audio, translating, analytics
 ```
 
 ## Develop
@@ -57,7 +60,12 @@ npm run check        # content validation + unit tests + offline file list is cu
 npm run sw           # regenerate app/sw.js after changing anything under app/
 python scripts/gen-audio-ai4bharat.py   # regenerate audio clips (see docs/audio.md)
 npm install && npm run artifact   # optional single-file build in dist/
+npm run sutra -- ../wildarc-sutra # update the shared libraries from a built checkout, then npm run sw
 ```
+
+Spaced repetition, streaks, save codes, script conversion, voice-pack selection, the offline file list and
+the anonymous counts come from [wildarc-sutra](https://github.com/yozo06/wildarc-sutra), a set of small
+shared libraries. A built copy lives in `app/vendor/sutra/` because the site has no build step.
 
 Adding or fixing lessons needs no programming: see [docs/content-guide.md](docs/content-guide.md).
 The validator refuses any Roman spelling that does not match its Kannada script, so typos are caught in CI.
@@ -75,3 +83,5 @@ Code: MIT ([LICENSE](LICENSE)). Lesson content under `app/content/`: CC BY-SA 4.
 Fonts: SIL OFL 1.1 ([app/fonts/README.md](app/fonts/README.md)).
 
 Corrections from Kannada speakers are the most valuable contribution. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+A WildArc project.
