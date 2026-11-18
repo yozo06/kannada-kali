@@ -9,7 +9,7 @@ Short names, one small request each, with nothing attached. `<lang>` is the teac
 
 | Name | When | What it tells us |
 |---|---|---|
-| `kali/<lang>/new` | the first time the app is opened on a device | how many people tried it |
+| `kali/<lang>/new` | the first time a player starts on a device (after choosing a language) | how many people tried it |
 | `kali/<lang>/day` | the first open of each day | how much it is used |
 | `kali/<lang>/back/d1`, `d3`, `d7`, `d14`, `d30` | once each, the first open on or after that many days | do people come back |
 | `kali/<lang>/unit/stop-<id>/start` and `/done` | once per stop per device | how far people get |

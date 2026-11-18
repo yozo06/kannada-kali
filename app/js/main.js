@@ -15,6 +15,8 @@ A.back = () => back();
 
 G.hooks.entered = () => {
   Store.initCloud(() => G.S, (id) => !!CARDS[id], () => { Store.saveState(G.pid, G.S); render(); });
+  // Counted here, not at page load, so a brand-new learner is counted under the language they picked.
+  count({ t: 'open' });
 };
 
 document.addEventListener('click', (e) => {
@@ -42,7 +44,6 @@ setLang(Store.getPref('lang') || 'en');
 const ix = Store.profiles();
 if (ix.cur) enter(ix.cur);
 render();
-count({ t: 'open' });
 initAudio(() => render());
 if (!EMBEDDED && 'serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
   window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => { /* offline support is optional */ }); });

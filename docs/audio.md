@@ -23,24 +23,31 @@ Either way the clips are committed to the repo, so players never call a speech s
 
 ## Sarvam pack
 
-The syllabus is about 7,700 characters, which costs roughly ₹25 at Sarvam's listed rate; new accounts
-get free credits that cover it. Check Sarvam's terms before redistributing the audio commercially.
+The syllabus is about 7,700 characters: roughly ₹25 with `bulbul:v3` at Sarvam's listed rate, less with
+`bulbul:v4-flash`. Sarvam's pricing page says new accounts get free credits that cover it. Check Sarvam's
+terms before redistributing the audio commercially.
 
-**On GitHub (no setup):** create a key at https://dashboard.sarvam.ai, add it as the repository secret
-`SARVAM_API_KEY` (Settings → Secrets and variables → Actions), then Actions → **audio-sarvam** → Run workflow.
-Tick *sample* first to hear six clips in a voice before paying for all of them. The workflow commits the
-clips and republishes the site.
+**On GitHub (no setup):**
+
+1. Create a key at https://dashboard.sarvam.ai and add it as the repository secret `SARVAM_API_KEY`
+   (Settings → Secrets and variables → Actions).
+2. Actions → **audio-sarvam** → Run workflow with mode **sample**. It makes six short phrases in each
+   listed voice (about 85 characters per voice) and attaches them to the run as `sarvam-voice-samples`.
+   Download, listen, pick a voice. Nothing is committed.
+3. Run it again with mode **full** and that voice. It commits `app/audio/sarvam/` and republishes the site.
 
 **On your machine:**
 
 ```bash
-SARVAM_API_KEY=sk_... npm run audio:sarvam -- --sample --speaker ritu   # try a voice
-SARVAM_API_KEY=sk_... npm run audio:sarvam                              # everything
+SARVAM_API_KEY=sk_... npm run audio:sarvam -- --sample --speakers ritu,kavya,kavitha,roopa,gokul
+SARVAM_API_KEY=sk_... npm run audio:sarvam -- --speaker kavya
 npm run sw
 ```
 
-Options: `--speaker` (e.g. ritu, kavya, priya, roopa, rahul, amit), `--pace 0.9`, `--model bulbul:v3`, `--force`.
-Never commit the key.
+Options: `--pace 0.9` (0.5 to 2.0), `--model bulbul:v3` or `bulbul:v4-flash`, `--force`.
+Voices for v3 include ritu, priya, neha, pooja, simran, kavya, ishita, shreya, roopa, tanya, shruti, suhani,
+kavitha, rupali (female) and shubh, aditya, rahul, rohan, amit, dev, varun, kabir, mani, gokul, vijay (male);
+Sarvam's API reference has the current list. Never commit the key.
 
 ## AI4Bharat pack
 
