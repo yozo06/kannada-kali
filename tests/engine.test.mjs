@@ -237,3 +237,14 @@ test('the shared libraries give the same answers this app always gave', async ()
   assert.equal(back.name, 'ಕ😀'); assert.equal(back.state.xp, 5);
   assert.equal(importCode('nonsense'), null); assert.equal(importCode('KK1.abcd'), null);
 });
+
+test('a shared link shows a picture: the page names a preview image that exists, at the public address', async () => {
+  const { readFileSync, existsSync, statSync } = await import('node:fs');
+  const html = readFileSync(new URL('../app/index.html', import.meta.url), 'utf8');
+  const meta = (p) => (html.match(new RegExp(`<meta property="${p}" content="([^"]*)"`)) || [])[1];
+  const site = 'https://yozo06.github.io/kannada-kali/';
+  assert.equal(meta('og:url'), site); assert.ok(meta('og:title') && meta('og:description'));
+  const image = meta('og:image'); assert.ok(image.startsWith(site), 'the image address must be absolute');
+  const file = new URL('../app/' + image.slice(site.length), import.meta.url);
+  assert.ok(existsSync(file)); assert.ok(statSync(file).size < 300_000, 'small enough for WhatsApp to show');
+});

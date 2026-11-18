@@ -1,5 +1,5 @@
 // Build-time facts about this copy of the app.
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';
 export const REPO_URL = 'https://github.com/yozo06/kannada-kali';
 /** Where anonymous usage counts go (a GoatCounter site). Empty turns counting off. Forks: use your own or leave it empty. */
 export const COUNT_ENDPOINT = 'https://yozo.goatcounter.com/count';
