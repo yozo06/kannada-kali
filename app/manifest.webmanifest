@@ -1,7 +1,7 @@
 {
   "name": "Kannada Kali",
   "short_name": "Kannada Kali",
-  "description": "Learn spoken Kannada a stop at a time. Built for Hindi and Marathi speakers.",
+  "description": "Learn spoken Bengaluru Kannada a stop at a time. Teaches in English, Hindi and Odia.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

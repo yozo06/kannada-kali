@@ -1,7 +1,7 @@
 {
   "name": "kannada-kali",
-  "version": "0.4.3",
-  "description": "A game for learning spoken Kannada, built for Hindi and Marathi speakers. Offline-first, no accounts, no AI at runtime.",
+  "version": "0.4.4",
+  "description": "A game for learning spoken Bengaluru Kannada, taught in English, Hindi or Odia. Offline-first, no accounts, no AI at runtime.",
   "type": "module",
   "private": true,
   "license": "MIT",

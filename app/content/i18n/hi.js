@@ -1708,7 +1708,7 @@ export default {
   "ui:Type a name first.": "पहले नाम लिखिए।",
   "ui:Kannada Kali · learn Kannada": "कन्नड कलि · कन्नड़ सीखिए",
   "ui:Speak Kannada in Bengaluru, a stop at a time.": "बेंगलुरु में कन्नड़ बोलिए, एक-एक स्टॉप करके।",
-  "ui:Built for people who know Hindi or Marathi: hundreds of words are already yours.": "हिन्दी या मराठी जानने वालों के लिए बना है: सैकड़ों शब्द पहले से आपके हैं।",
+  "ui:Taught in English, Hindi or Odia. Many Kannada words come from Sanskrit, so you already know hundreds.": "अंग्रेज़ी, हिन्दी या ओड़िया में सीखें। कन्नड़ के बहुत से शब्द संस्कृत से आए हैं, इसलिए सैकड़ों शब्द आप पहले से जानते हैं।",
   "ui:Real situations first: autos, darshinis, deliveries, landlords, the doctor.": "पहले असली मौक़े: ऑटो, दर्शिनी, डिलीवरी, मकान मालिक, डॉक्टर।",
   "ui:Five minutes a day. Works offline. No account, nothing leaves this device.": "रोज़ पाँच मिनट। बिना इंटरनेट चलता है। कोई अकाउंट नहीं, इस फ़ोन से बाहर कुछ नहीं जाता।",
   "ui:Who is learning?": "कौन सीख रहा है?",

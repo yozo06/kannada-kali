@@ -1708,7 +1708,7 @@ export default {
   "ui:Type a name first.": "ଆଗ ଗୋଟିଏ ନାଁ ଲେଖନ୍ତୁ।",
   "ui:Kannada Kali · learn Kannada": "କନ୍ନଡ କଲି · କନ୍ନଡ଼ ଶିଖନ୍ତୁ",
   "ui:Speak Kannada in Bengaluru, a stop at a time.": "ବେଙ୍ଗାଲୁରୁରେ କନ୍ନଡ଼ କହନ୍ତୁ, ଗୋଟିଏ ଗୋଟିଏ ଷ୍ଟପ୍ କରି।",
-  "ui:Built for people who know Hindi or Marathi: hundreds of words are already yours.": "ହିନ୍ଦୀ ବା ମରାଠୀ ଜାଣିଥିବା ଲୋକଙ୍କ ପାଇଁ ତିଆରି: ଶହ ଶହ ଶବ୍ଦ ଆଗରୁ ଆପଣଙ୍କର।",
+  "ui:Taught in English, Hindi or Odia. Many Kannada words come from Sanskrit, so you already know hundreds.": "ଇଂରାଜୀ, ହିନ୍ଦୀ ବା ଓଡ଼ିଆରେ ଶିଖନ୍ତୁ। କନ୍ନଡ଼ର ଅନେକ ଶବ୍ଦ ସଂସ୍କୃତରୁ ଆସିଛି, ତେଣୁ ଶହ ଶହ ଶବ୍ଦ ଆପଣ ଆଗରୁ ଜାଣନ୍ତି।",
   "ui:Real situations first: autos, darshinis, deliveries, landlords, the doctor.": "ଆଗ ଅସଲ ଜୀବନର କଥା: ଅଟୋ, ଦର୍ଶିନି, ଡେଲିଭରି, ଘର ମାଲିକ, ଡାକ୍ତର।",
   "ui:Five minutes a day. Works offline. No account, nothing leaves this device.": "ଦିନକୁ ପାଞ୍ଚ ମିନିଟ୍। ଇଣ୍ଟରନେଟ୍ ବିନା ଚାଲେ। ଆକାଉଣ୍ଟ ଦରକାର ନାହିଁ, ଏଇ ଡିଭାଇସ୍‌ରୁ କିଛି ବାହାରକୁ ଯାଏନି।",
   "ui:Who is learning?": "କିଏ ଶିଖୁଛି?",

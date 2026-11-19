@@ -1,6 +1,6 @@
 # Kannada Kali · ಕನ್ನಡ ಕಲಿ
 
-A game for learning **spoken Bengaluru Kannada**, built for people who already know Hindi or Marathi.
+A game for learning **spoken Bengaluru Kannada**, taught in English, Hindi or Odia.
 You ride a metro map: each stop is a real situation (auto stand, darshini, delivery call, landlord, doctor),
 each ride is a five-minute quiz, and every mistake adds ₹10 to the fare meter.
 
