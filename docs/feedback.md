@@ -5,6 +5,8 @@ The app has no server, so a learner's message has to travel some other way.
 what kind of message, a text box, and a line of technical details (app version, teaching language,
 device type, browser, screen size, and the stop or card they were on). Nothing identifies the person.
 
+The live app sends to a Google Form owned by Yozo ("Kannada Kali feedback": three questions, no sign-in, no email collected). Responses are under the form's Responses tab in his Google account.
+
 Where it goes depends on `FEEDBACK_FORM` in `app/js/config.js`:
 
 - **Not set (the default):** the message is copied so the learner can paste it to whoever shared the app,
