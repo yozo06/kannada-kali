@@ -1,5 +1,5 @@
 // Build-time facts about this copy of the app.
-export const VERSION = '0.4.2';
+export const VERSION = '0.4.3';
 /** Where feedback goes: a Google Form. `fields` are the form's entry ids (entry.123456) for pre-filling; leave '' to skip.
  *  With no url, the feedback screen copies the message and offers GitHub instead. See docs/feedback.md. */
 export const FEEDBACK_FORM = { url: '', fields: { kind: '', message: '', details: '' } };

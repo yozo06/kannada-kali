@@ -47,7 +47,7 @@ app/                 the whole deployable site (no build step)
   js/store.js        profiles and save codes     js/audio.js   clips → device voice fallback
   js/meter.js        anonymous usage counts
   vendor/sutra/      shared libraries copied from wildarc-sutra (do not edit here)
-  audio/             manifest.json + kn/<hash>.mp3 clips (generated, optional)
+  audio/             manifest.json + <voice>/<hash>.mp3 clips (gokul, roopa, kn)
 scripts/             validate-content, build-sw, gen-audio, sentences, build-artifact, sync-sutra, serve
 tests/               node --test
 docs/                curriculum, content guide, audio, translating, analytics
@@ -72,10 +72,12 @@ The validator refuses any Roman spelling that does not match its Kannada script,
 
 ## Audio
 
-Every phrase has a bundled clip (`app/audio/kn/`), generated once with the open AI4Bharat Indic-TTS Kannada
-voice and committed here, so audio works offline on any device with no speech service involved.
-If a clip is missing the app falls back to the device's own Kannada voice. To regenerate after editing
-lessons, or to swap in human recordings, see [docs/audio.md](docs/audio.md).
+Every phrase has a bundled clip in three voices, committed here, so audio works offline on any device and
+players never call a speech service: **Gokul** (a man, the default) and **Roopa** (a woman), recorded with
+Sarvam AI through [wildarc-sutra's `tts`](https://github.com/yozo06/wildarc-sutra/tree/main/src/tts), and the
+open **AI4Bharat** Indic-TTS voice. Players choose under You → Settings → Voice. If a clip is missing the app
+falls back to the device's own Kannada voice. To record again after editing lessons, add a voice, or swap in
+human recordings, see [docs/audio.md](docs/audio.md).
 
 ## Licence
 
