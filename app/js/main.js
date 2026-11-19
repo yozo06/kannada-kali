@@ -35,9 +35,10 @@ document.addEventListener('keydown', (e) => {
   if (inField || !G.UI.screen || !/^[1-4]$/.test(e.key)) return;
   const b = $('.opt[data-i="' + (+e.key - 1) + '"]:not([disabled])'); if (b) b.click();
 });
-window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); G.install = e; if (G.S && !G.UI.screen && G.UI.tab === 'me') render(); });
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); G.install = e; if (G.S && !G.UI.screen && (G.UI.tab === 'me' || G.UI.tab === 'map')) render(); });
 window.addEventListener('pagehide', () => { if (G.S) save(); if (G.UI.screen && (G.UI.screen.t === 'ride' || G.UI.screen.t === 'dialog')) countQuit(); });
 window.addEventListener('online', () => count({ t: 'open' })); // send whatever waited while offline
+window.addEventListener('appinstalled', () => { G.install = null; if (G.S && !G.UI.screen) render(); });
 window.addEventListener('appinstalled', () => count({ t: 'count', name: 'installed', once: true }));
 
 setLang(Store.getPref('lang') || 'en');

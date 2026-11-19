@@ -9,6 +9,7 @@ import { countingAvailable, countingOn, setCounting } from '../meter.js';
 import * as Store from '../store.js';
 import { VERSION, REPO_URL, EMBEDDED } from '../config.js';
 import { tx, pron, nativePron, lang, setLang, LANGS } from '../i18n.js';
+import { mapNotice, installRow, feedbackRow, markBackedUp } from './extras.js';
 import { toScript } from '../engine/translit.js';
 import { G, ctx, STN, views, screens, A, IC, stars, dots, kn, knFull, spk, topbar, boxOf, starsOf, seenCount, save, sfx, celebrate, toast, go, tab, back, render, setStreakFn, twinD, $ } from './core.js';
 
@@ -79,7 +80,7 @@ views.map = () => {
     '<button class="stn boss' + (nx.id === 'majestic' ? ' next' : '') + '" data-a="open" data-id="majestic"><span class="sk kn" lang="kn">' + esc(STN.majestic.name) + '</span><span class="sn">' + tx('Majestic') + '</span><span class="sf">' + stars(mst) + '</span></button></section>';
   // Shown once: the app counts anonymous usage, and how to switch that off.
   const counts = countingAvailable() && countingOn() && !Store.getPref('countSeen') ? '<section class="panel flat" id="countNote"><p>' + tx('This app counts anonymous usage, to see what helps learners. No names, no ids, nothing you type. You can turn it off under You → Settings.') + '</p><button class="btn" data-a="countok">' + tx('OK') + '</button></section>' : '';
-  return counts + ticket + quests + mission + pocket + LINES.map((l) => lineSection(l, l.side ? ns : nx)).join('') + inter;
+  return (counts || mapNotice()) + ticket + quests + mission + pocket + LINES.map((l) => lineSection(l, l.side ? ns : nx)).join('') + inter;
 };
 A.line = (d) => { const n = +d.n, sts = STATIONS.filter((s) => s.line === n); const cur = G.UI.open[n] != null ? G.UI.open[n] : sts.includes(nextMain()); G.UI.open[n] = !cur; render(); };
 A.mission = () => {
@@ -230,8 +231,9 @@ views.me = () => {
     (countingAvailable() ? '<div class="setr"><span>' + tx('Anonymous usage counts') + '</span>' + seg(countingOn(), 'counting', '', countingOn() ? tx('On') : tx('Off')) + '</div><p class="mut">' + tx('Counts how often the app is opened and which stops get finished, to see what helps learners. No names, no ids, nothing you type.') + '</p>' : '') +
     '<p class="mut">' + audioLine + '</p>' + (au.clips && !EMBEDDED ? '<button class="btn" data-a="dlaudio">' + (G.UI.msg || tx('Keep all audio for offline use')) + '</button>' : '') +
     '<p class="mut">' + sync + '</p>' +
-    (G.install ? '<button class="btn pri" data-a="install">' + tx('Install the app on this device') + '</button>' : '') +
+    installRow() +
     '<div class="setr"><span>' + tx('Erase this player’s progress') + '</span><button class="seg dang' + (G.UI.confirm === 'reset' ? ' on' : '') + '" data-a="reset">' + (G.UI.confirm === 'reset' ? tx('Tap again to erase') : tx('Erase')) + '</button></div></section>' +
+    feedbackRow() +
     '<p class="mut center">Kannada Kali ' + VERSION + (EMBEDDED ? '' : ' · ' + tx('works offline once loaded')) + (REPO_URL ? ' · <a href="' + esc(REPO_URL) + '" target="_blank" rel="noopener">' + tx('source and fixes') + '</a>' : '') + '</p>';
 };
 A.voice = (d) => { G.S.set.voice = d.v; setVoicePack(d.v); G.UI.msg = ''; save(); render(); const c = CARDS.nm1; if (canSpeak(c.k)) speak(c.k); };
@@ -250,7 +252,6 @@ A.dlaudio = async () => {
   const r = await downloadAll((d, tot) => { G.UI.msg = tx('Downloading {a}/{b}', { a: d, b: tot }); const b = $('[data-a="dlaudio"]'); if (b) b.textContent = G.UI.msg; });
   G.UI.msg = r.failed ? tx('{a} of {b} clips kept. Try again online.', { a: r.total - r.failed, b: r.total }) : tx('All {n} clips kept for offline use', { n: r.total }); if (!G.UI.screen && G.UI.tab === 'me') render();
 };
-A.install = async () => { const ev = G.install; if (!ev) return; G.install = null; try { ev.prompt(); await ev.userChoice; } catch (e) { /* dismissed */ } render(); };
 
 /* ================= Players and save codes ================= */
 export function enter(id) {
@@ -283,9 +284,10 @@ screens.profiles = () => {
 A.backup = () => go({ t: 'backup' });
 A.copycode = async () => {
   const ta = $('#code'); if (!ta) return;
-  try { await navigator.clipboard.writeText(ta.value); toast(tx('Save code copied.')); } catch (e) { ta.focus(); ta.select(); toast(tx('Select all and copy the code.')); }
+  try { await navigator.clipboard.writeText(ta.value); toast(tx('Save code copied.')); markBackedUp(); } catch (e) { ta.focus(); ta.select(); toast(tx('Select all and copy the code.')); }
 };
 A.savefile = () => {
+  markBackedUp();
   const blob = new Blob([Store.exportCode(G.S, G.profile.name)], { type: 'text/plain' }), a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = 'kannada-kali-' + (G.profile.name || 'player').toLowerCase().replace(/[^a-z0-9]+/g, '-') + '-' + today() + '.txt';
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 2000);

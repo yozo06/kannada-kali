@@ -425,3 +425,22 @@ h1.eyebrow,h2.eyebrow{margin:0}
 :root:lang(hi) .ro,:root:lang(or) .ro{font-size:.95em;line-height:1.5}
 :root:lang(hi) .eyebrow,:root:lang(or) .eyebrow{letter-spacing:.02em;font-size:.8rem}
 :root:lang(hi) .osound,:root:lang(or) .osound{font-size:1.9rem}
+
+/* ---- notices, install, feedback ---- */
+.notice{background:var(--stub);border:2px solid var(--edge);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:0 4px 0 var(--edge)}
+.notice.warn{background:var(--card);border-left:8px solid var(--turmeric)}
+.notice .nh{display:flex;align-items:center;gap:10px}
+.nicon{width:38px;height:38px;border-radius:12px;background:var(--turmeric);color:var(--onacc);display:grid;place-items:center;flex:none}
+.nicon svg{width:22px;height:22px}
+.notice p{max-width:58ch}
+.notice .lnk{align-self:flex-start;color:var(--mut)}
+.steps{background:var(--card);border:2px dashed var(--edge);border-radius:12px;padding:10px 12px;font-weight:700}
+.callout{background:var(--stub);border:2px solid var(--edge);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.callout.plain{background:var(--card);border-color:var(--line)}
+.callout .btn{align-self:flex-start}
+.h3{font-size:1.02rem;font-weight:800;margin:0;line-height:1.3}
+.okline{display:flex;align-items:center;gap:8px;color:var(--ok);font-weight:700}
+.okline svg{width:18px;height:18px}
+.fbtext{font:500 1rem/1.5 var(--lfont);word-break:normal;min-height:120px}
+a.btn{text-decoration:none}
+.sheet .rep{align-self:flex-end;color:var(--mut);font-size:.82rem;font-weight:700;min-height:28px}

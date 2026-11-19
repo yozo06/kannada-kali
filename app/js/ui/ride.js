@@ -140,7 +140,7 @@ function sheet(q) {
     (c.hi && !c.t ? '<span class="twin"><span class="dv">' + esc(c.hi) + '</span></span>' : '') + (c.n ? '<span class="note">' + esc(c.n) + '</span>' : '') + '</div>';
   const head = q.t === 'say' ? (q.skipped ? tx('Skipped') : tx('Good. Say it again tomorrow.')) : good ? (q.close ? tx('Close enough') : q.try ? tx('Got it this time') : [tx('Correct'), tx('Right'), tx('Yes'), tx('Spot on')][R.i % 4]) : tx('Not quite. Fare +₹10');
   return '<div class="sheet ' + (good ? 'good' : 'badq') + '" role="status"><div class="wrap shin"><div class="sh-h">' + (good ? IC.chk : IC.x) + '<b>' + head + '</b>' + (c ? spk(c.k) : '') + '</div>' + inner +
-    '<button class="btn pri wide" data-a="next" id="nextBtn">' + (R.i >= R.q.length - 1 ? tx('Finish') : tx('Continue')) + '</button></div></div>';
+    (q.t === 'say' ? '' : '<button class="lnk rep" data-a="feedback" data-k="kannada">' + tx('Report a mistake here') + '</button>') + '<button class="btn pri wide" data-a="next" id="nextBtn">' + (R.i >= R.q.length - 1 ? tx('Finish') : tx('Continue')) + '</button></div></div>';
 }
 screens.ride = () => {
   const R = G.R, q = prep(R.q[R.i], ctx), c = q.card, pct = Math.round(R.done / R.total * 100);
