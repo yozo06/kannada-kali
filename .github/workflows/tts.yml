@@ -1,0 +1,49 @@
+name: tts
+# Records the Kannada phrases with Sarvam AI. Run it by hand from the Actions tab.
+# Needs the repository secret SARVAM_API_KEY (Settings → Secrets and variables → Actions).
+#   mode "sample": a few phrases in each voice, offered on the run page as "tts-voice-samples"
+#                  (open index.html inside to compare). Nothing is committed.
+#   mode "full":   every phrase still missing, in each of the voices; each voice is its own pack
+#                  (app/audio/<voice>/) that players choose under You → Settings → Voice.
+#                  Committed, then the site is republished.
+# The work is done by wildarc-sutra's shared workflow; this file only says what is particular to Kannada Kali.
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: sample = try voices · full = record everything and publish
+        type: choice
+        options: [sample, full]
+        default: sample
+      speakers:
+        description: 'sample: voices to try, comma-separated'
+        default: gokul,roopa,ritu,kavya
+      voices:
+        description: 'full: voices to record, comma-separated (each becomes a pack players can choose)'
+        default: gokul,roopa
+      pace:
+        description: Speaking pace (0.5 to 2.0, 1.0 = normal)
+        default: '0.9'
+      force:
+        description: 'full: record again what already exists'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+  actions: write
+jobs:
+  tts:
+    uses: yozo06/wildarc-sutra/.github/workflows/tts.yml@main
+    with:
+      mode: ${{ inputs.mode }}
+      speakers: ${{ inputs.speakers }}
+      voices: ${{ inputs.voices }}
+      pace: ${{ inputs.pace }}
+      force: ${{ inputs.force }}
+      sentences: node scripts/sentences.mjs
+      # Kannada Kali writes its own manifest (pack order and default live in scripts/gen-audio.mjs).
+      after: node scripts/gen-audio.mjs --list && npm run sw && npm run check
+      commit: app/sw.js
+      publish: pages.yml
+    secrets:
+      SARVAM_API_KEY: ${{ secrets.SARVAM_API_KEY }}

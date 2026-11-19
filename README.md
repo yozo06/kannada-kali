@@ -48,7 +48,7 @@ app/                 the whole deployable site (no build step)
   js/meter.js        anonymous usage counts
   vendor/sutra/      shared libraries copied from wildarc-sutra (do not edit here)
   audio/             manifest.json + kn/<hash>.mp3 clips (generated, optional)
-scripts/             validate-content, build-sw, gen-audio, build-artifact, sync-sutra, serve
+scripts/             validate-content, build-sw, gen-audio, sentences, build-artifact, sync-sutra, serve
 tests/               node --test
 docs/                curriculum, content guide, audio, translating, analytics
 ```

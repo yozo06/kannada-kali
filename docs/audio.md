@@ -2,7 +2,7 @@
 
 The app plays a phrase from the first source that exists:
 
-1. a bundled clip, `app/audio/kn/<hash>.mp3`, listed in `app/audio/manifest.json`
+1. a bundled clip, `app/audio/<pack>/<hash>.mp3`, listed in `app/audio/manifest.json`
 2. the device's own Kannada text-to-speech voice (most Android phones; rarely on iOS/desktop)
 3. nothing: the speaker buttons and listening questions simply do not appear
 
@@ -16,38 +16,34 @@ the manifest is the default, and a phrase missing from the chosen pack falls bac
 
 | Pack | Folder | Made with | Notes |
 |---|---|---|---|
-| Sarvam | `audio/sarvam/` | Sarvam AI Bulbul (kn-IN) | Natural-sounding. Needs an API key once, to generate. Default when present. |
+| Gokul | `audio/gokul/` | Sarvam AI Bulbul v3 (kn-IN), a man's voice | Natural-sounding. The default. |
+| Roopa | `audio/roopa/` | Sarvam AI Bulbul v3 (kn-IN), a woman's voice | Natural-sounding. |
 | AI4Bharat | `audio/kn/` | AI4Bharat Indic-TTS, female | Free and open, runs on a laptop. Clear but robotic. |
 
 Either way the clips are committed to the repo, so players never call a speech service.
+Pack order and the default live in `PACK_LABELS` in `scripts/gen-audio.mjs`: the first pack listed there
+that has clips is the default.
 
-## Sarvam pack
+## Sarvam packs (Gokul, Roopa)
 
-The syllabus is about 7,700 characters: roughly ₹25 with `bulbul:v3` at Sarvam's listed rate, less with
-`bulbul:v4-flash`. Sarvam's pricing page says new accounts get free credits that cover it. Check Sarvam's
-terms before redistributing the audio commercially.
-
-**On GitHub (no setup):**
+Recorded by [wildarc-sutra's `tts`](https://github.com/yozo06/wildarc-sutra/tree/main/src/tts), the
+recorder shared with other WildArc apps. This app only tells it which phrases exist
+(`npm run sentences`). The syllabus is about 7,700 characters per voice; Sarvam lists Bulbul v3 at ₹3
+per 1,000 characters. Check Sarvam's terms before redistributing the audio commercially.
 
 1. Create a key at https://dashboard.sarvam.ai and add it as the repository secret `SARVAM_API_KEY`
-   (Settings → Secrets and variables → Actions).
-2. Actions → **audio-sarvam** → Run workflow with mode **sample**. It makes six short phrases in each
-   listed voice (about 85 characters per voice) and attaches them to the run as `sarvam-voice-samples`.
-   Download, listen, pick a voice. Nothing is committed.
-3. Run it again with mode **full** and that voice. It commits `app/audio/sarvam/` and republishes the site.
+   (Settings → Secrets and variables → Actions). The key never goes in a file.
+2. To hear voices first: Actions → **tts** → Run workflow with mode **sample**. It records two phrases in
+   each listed voice and attaches them to the run as `tts-voice-samples` (open `index.html` inside to
+   compare). Nothing is committed.
+3. Actions → **tts** → mode **full**. It records every phrase still missing in each voice listed under
+   "voices" (`gokul,roopa`), one pack per voice, deletes clips of phrases that no longer exist, rebuilds the
+   manifest, commits and republishes the site. About 20 minutes per voice.
 
-**On your machine:**
-
-```bash
-SARVAM_API_KEY=sk_... npm run audio:sarvam -- --sample --speakers ritu,kavya,kavitha,roopa,gokul
-SARVAM_API_KEY=sk_... npm run audio:sarvam -- --speaker kavya
-npm run sw
-```
-
-Options: `--pace 0.9` (0.5 to 2.0), `--model bulbul:v3` or `bulbul:v4-flash`, `--force`.
-Voices for v3 include ritu, priya, neha, pooja, simran, kavya, ishita, shreya, roopa, tanya, shruti, suhani,
-kavitha, rupali (female) and shubh, aditya, rahul, rohan, amit, dev, varun, kabir, mani, gokul, vijay (male);
-Sarvam's API reference has the current list. Never commit the key.
+After changing lessons, run **full** again: only new or edited phrases are recorded. To add a voice, add
+its name to "voices" and to `PACK_LABELS`. Voices for Bulbul v3 include ritu, priya, neha, pooja, simran,
+kavya, ishita, shreya, roopa, tanya, shruti, suhani, kavitha, rupali (female) and shubh, aditya, rahul,
+rohan, amit, dev, varun, kabir, mani, gokul, vijay (male).
 
 ## AI4Bharat pack
 

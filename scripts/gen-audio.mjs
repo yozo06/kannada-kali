@@ -40,7 +40,7 @@ export const byHash = new Map();
 for (const p of phrases) { const h = hash(p); if (byHash.has(h) && byHash.get(h) !== p) throw new Error('hash collision: ' + p + ' / ' + byHash.get(h)); byHash.set(h, p); }
 
 /** Voice packs the app knows how to name. Any other folder under app/audio is listed under its own name. */
-export const PACK_LABELS = { sarvam: 'Sarvam', kn: 'AI4Bharat', google: 'Google' };
+export const PACK_LABELS = { gokul: 'Gokul', roopa: 'Roopa', kn: 'AI4Bharat', google: 'Google' };   // gokul and roopa are Sarvam voices (the tts workflow)
 /** Rebuild app/audio/manifest.json from the clip folders on disk. The first pack in PACK_LABELS order that has clips is the default. */
 export function writeManifest() {
   const root = fileURLToPath(new URL('../app/audio/', import.meta.url)); const packs = {};

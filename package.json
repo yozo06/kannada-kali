@@ -14,7 +14,7 @@
     "artifact": "node scripts/build-artifact.mjs",
     "check": "npm run validate && npm test && node scripts/check-i18n.mjs && node scripts/build-sw.mjs --check",
     "i18n": "node scripts/check-i18n.mjs",
-    "audio:sarvam": "node scripts/gen-audio-sarvam.mjs",
+    "sentences": "node scripts/sentences.mjs",
     "sutra": "node scripts/sync-sutra.mjs"
   },
   "devDependencies": {
