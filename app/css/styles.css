@@ -213,7 +213,7 @@ body[data-screen="tabs"] .main{padding-bottom:112px}
 .route .fill{position:absolute;left:0;top:50%;height:6px;margin-top:-3px;border-radius:3px;background:var(--lc,var(--purple));transition:width .35s ease-out}
 
 .autoI{position:absolute;top:50%;width:40px;transform:translate(-50%,-62%);transition:left .35s ease-out}
-.autoI svg{width:40px;height:25px}
+.autoI svg{width:38px;height:32px}
 .autoI.wob{animation:wob .5s}
 @keyframes wob{0%,100%{transform:translate(-50%,-62%)}20%{transform:translate(-62%,-62%) rotate(-5deg)}50%{transform:translate(-38%,-62%) rotate(4deg)}75%{transform:translate(-55%,-62%)}}
 .meter{background:#16142A;color:#FFC83D;border:2px solid var(--edge);border-radius:10px;padding:3px 10px 4px;display:flex;flex-direction:column;align-items:flex-end;line-height:1;min-width:74px}
